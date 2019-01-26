@@ -23,7 +23,7 @@ pydocstyle = "*"
 [packages]
 
 pillow = "*"
-"psycopg2" = "*"
+"psycopg2-binary" = "*"
 "jinja2" = "*"
 django = "==2.1"
 unidecode = "*"

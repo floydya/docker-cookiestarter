@@ -28,8 +28,16 @@ services:
 
   backend:
     build: ./server
+    command: bash -c "python manage.py migrate &&
+      python manage.py makemessages --all -e py,html,jinja &&
+      python manage.py runserver 0.0.0.0:8000"
     ports:
       - 8535:8000
+    environment:
+      - DJANGO_SECRET_KEY=CHANGEME!!!
+      - DJANGO_DB_URL=psql://postgres:postgres@db:5432/db
+      - DJANGO_CACHE_URL=redis://cache:6379
+      - CELERY_BROKER_URL=redis://cache:6379
     volumes:
       - .:/code
       - ./server:/code/server
