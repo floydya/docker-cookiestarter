@@ -1,0 +1,13 @@
+{
+  "presets": ["env", "stage-0"],
+  "plugins": [
+    ["transform-runtime", {
+      "helpers": false,
+      "polyfill": false,
+      "regenerator": true
+    }],
+    "transform-object-rest-spread",
+    "transform-vue-jsx"
+  ],
+  "comments": false
+}

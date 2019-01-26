@@ -1,0 +1,56 @@
+{
+  "reporter": "stylint-stylish",
+  "reporterOptions": {
+    "verbose": true
+  },
+
+  "blocks": false,
+  "brackets": "never",
+  "colons": false,
+  "colors": "always",
+  "commaSpace": "always",
+  "commentSpace": "always",
+  "cssLiteral": "never",
+  "customProperties": [],
+  "depthLimit": false,
+  "duplicates": true,
+  "efficient": "always",
+  "exclude": [
+    "node_modules/**/*"
+  ],
+  "extendPref": "@extends",
+  "globalDupe": false,
+  "groupOutputByFile": true,
+  "indentPref": 2,
+  "leadingZero": "never",
+  "maxErrors": false,
+  "maxWarnings": false,
+  "mixed": false,
+  "mixins": [],
+  "namingConvention": "lowercase-dash",
+  "namingConventionStrict": false,
+  "none": "always",
+  "noImportant": true,
+  "parenSpace": "never",
+  "placeholders": "always",
+  "prefixVarsWithDollar": "always",
+  "quotePref": "single",
+  "reporter": "stylint-stylish",
+  "reporterOptions": {
+    "ruleName": true,
+    "verbose": true,
+
+    "columns": ["lineData", "severity", "description", "rule"],
+    "columnSplitter": "  ",
+    "showHeaders": false,
+    "truncate": true
+  },
+  "semicolons": "never",
+  "sortOrder": "grouped",
+  "stackedProperties": "never",
+  "trailingWhitespace": "never",
+  "universal": false,
+  "valid": false,
+  "zeroUnits": "never",
+  "zIndexNormalize": false
+}

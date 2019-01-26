@@ -1,0 +1,27 @@
+{
+    "name": "Project Name",
+    "project": "{{ cookiecutter.name.lower()|replace(' ', '_')|replace('-', '_') }}",
+    "description": "A short description of the project.",
+    "version": "0.1.0",
+    "timezone": ["UTC", "Europe/Moscow"],
+    "language": [
+        {
+            "lang_code": "ru",
+            "lang_name": "Russian"
+        },
+        {
+            "lang_code": "en",
+            "lang_name": "English"
+        }
+    ],
+    "author_name": "WebCase",
+    "author_email": "info@webcase.com.ua",
+    "author_url": "webcase.com.ua",
+    "celery": ["Disable", "Enable"],
+    "testing": ["Disable", "Enable"],
+    "docs": ["Disable", "Enable"],
+    "_copy_without_render": [
+        "*node_modules",
+        "*.pug"
+    ]
+}

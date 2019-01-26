@@ -1,0 +1,38 @@
+$DefaultRatios ?= ( \
+  (16 10) \
+  (16 9) \
+  (4 3) \
+  (5 4) \
+  (1 1) \
+)
+
+ratio-box($width, $height=null)
+  $ratio = $height ? ($height / $width) : $width
+
+  pos relative
+
+  &:before
+    h auto
+    d block
+    w 100%
+    pt $ratio * 100%
+    content ''
+
+
+ratio-overlay()
+  pos absolute 0 0 0 0
+  w 100%
+  h 100%
+
+
+$ratio-overlay
+  ratio-overlay()
+
+
+for $ratio in $DefaultRatios
+  $ratio-{$ratio[0]}x{$ratio[1]}
+  $ratio-{$ratio[0]}-{$ratio[1]}
+    ratio-box $ratio[0] $ratio[1]
+
+    & > *:first-child:last-child
+      @extend $ratio-overlay

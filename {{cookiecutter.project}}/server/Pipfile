@@ -1,0 +1,38 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[requires]
+python_version = '3.7'
+
+[dev-packages]
+
+django-debug-toolbar = "*"
+ipython = "*"
+{% if cookiecutter.testing == "Enabled" %}
+freezegun = "*"
+coverage = "*"
+"flake8" = "*"
+mypy = "*"
+bandit = "*"
+tox = "*"
+pydocstyle = "*"
+{% endif %}
+[packages]
+
+pillow = "*"
+"psycopg2" = "*"
+"jinja2" = "*"
+django = "==2.1"
+unidecode = "*"
+celery = "*"
+django-jinja = "*"
+django-model-utils = "*"
+django-rosetta = "*"
+django-redis = "*"
+django-composable-views = {git = "https://gitlab.com/preusx/django-composable-views.git", ref = "0.1.0"}
+django-environ = "*"
+gunicorn = {version = "*", sys_platform = "== 'linux'"}
+gevent = {version = "*", sys_platform = "== 'linux'"}

@@ -1,0 +1,57 @@
+// Modular scale unit configurations
+$ModularScaleTemplate ?= '(Math.pow(%s, value - 3))rem'
+$ModularScaleFactor   ?= 1.618 // Golden ratio
+
+// Space(offset) unit configurations
+$SpaceTemplate ?= '(%s * Math.pow(%s, value - 1))rem'
+$SpaceStart    ?= 0.25
+$SpaceRatio    ?= 2
+
+// Diatonic scale unit configurations
+// http://ty-p.cc/
+// http://spencermortensen.com/articles/typographic-scale/
+// https://viljamis.com/2012/on-typography/
+//
+// Diatonic series
+// $DiatonicTemplate ?= '([1, 9/8, 81/64, 4/3, 3/2, 27/16, 243/128][(value - 1)%7] * (1 + Math.floor((value - 1)/7)))rem'
+//
+// Simple dioatonic formula
+// $DiatonicTemplate ?= '(%s * Math.pow(%s, (value - 1) / %s))rem'
+//
+// Golden ratio config
+// $DiatonicBase     ?= 1
+// $DiatonicRatio    ?= 1.618034
+// $DiatonicNotes    ?= 2
+//
+// Classic typography scale config:
+// $DiatonicBase     ?= 16
+// $DiatonicRatio    ?= 2
+// $DiatonicNotes    ?= 5
+
+// Typography scale(using font sizes from tahyons and modular scale)
+// http://tachyons.io/docs/typography/scale/
+$TypoTemplate ?= '(value > 0 && value < 10 ? [0.75, 0.875, 1, 1.25, 1.5, 2.25, 3, 5, 6][Math.round(value)|0-1] : Math.pow(%s, value - 3))rem'
+$TypoFactor   ?= 1.33
+$TypoStart    ?= 3
+
+// Vertical rhythm unit configurations
+$VerticalRhythmTemplate ?= '(%s * %s * value)rem'
+$VerticalRhythmBase     ?= unit($Font.size.body, '')
+$VerticalRhythmLine     ?= unit($Font.height.body, '')
+
+
+:root
+  // Modular scale unit
+  --define ms unquote($ModularScaleTemplate % $ModularScaleFactor)
+
+  // Space unit
+  --define sp unquote($SpaceTemplate % ($SpaceStart $SpaceRatio))
+
+  // Diatonic unit
+  // --define dt unquote($DiatonicTemplate % ($DiatonicBase $DiatonicRatio $DiatonicNotes))
+
+  // Typography unit
+  --define ty unquote($TypoTemplate % $TypoFactor)
+
+  // Vertical rhythm unit
+  --define vr unquote($VerticalRhythmTemplate % ($VerticalRhythmBase $VerticalRhythmLine))

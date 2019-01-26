@@ -1,0 +1,129 @@
+-
+  var jinja_brackets = {
+    tag: ['{%', '%}'],
+    exp: ['{{', '}}'],
+  };
+
+  var args = function(a) {
+    return Array.prototype.slice.call(a);
+  };
+
+  var tag = function() {
+    return [
+      jinja_brackets.tag[0],
+      args(arguments).join(' '),
+      jinja_brackets.tag[1],
+      ].join(' ');
+  };
+
+  var exp = function() {
+    return [
+      jinja_brackets.exp[0],
+      args(arguments).join(' '),
+      jinja_brackets.exp[1],
+      ].join(' ');
+  };
+
+
+  var ifte = function(condition, then, _else) {
+    return tag('if', condition) + then
+      + (!!_else ? tag('else') + _else : '')
+      + tag('endif');
+  };
+  var bl = function(name) { return tag('block', name) + tag('endblock'); }
+  var trans = function(mess) { return tag('trans') + mess + tag('endtrans'); }
+  var home = function() { return exp('"/" + LANGUAGE_CODE + "/"'); };
+  var url = function(url) { return exp('url(', url, ')'); };
+  var static = function(url) { return exp('static(', url, ')'); };
+
+
+mixin tag(name)
+  if !name
+    != jinja_brackets.tag[0] + ' '
+    block
+    != ' ' + jinja_brackets.tag[1]
+  else
+    != tag(name, args(arguments).slice(1).join(' ')) + ' '
+    block
+    != ' ' + tag('end' + name)
+
+
+mixin exp
+  != jinja_brackets.exp[0]
+  block
+  != jinja_brackets.exp[1]
+
+
+mixin bl
+  +tag('block', args(arguments).join(' '))
+    block
+
+
+mixin inc
+  +tag
+    = 'include '
+    block
+
+
+mixin import
+  +tag
+    = 'import '
+    block
+
+
+mixin ext
+  +tag
+    = 'extends '
+    block
+
+
+mixin if
+  +tag('if', args(arguments).join(' '))
+    block
+
+
+mixin for
+  +tag('for', args(arguments).join(' '))
+    block
+
+
+mixin macro
+  +tag('macro', args(arguments).join(' '))
+    block
+
+
+mixin call
+  +tag('call', args(arguments).join(' '))
+    block
+
+
+mixin with
+  +tag('with', args(arguments).join(' '))
+    block
+
+
+mixin set
+  +tag
+    = 'set '
+    block
+
+
+mixin do
+  +tag
+    = 'do '
+    block
+
+
+mixin else
+  +tag else
+
+
+mixin elif()
+  +tag elif
+    = ' '
+    block
+
+
+mixin trans(condition)
+  +tag('trans', condition)
+    block
