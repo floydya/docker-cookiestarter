@@ -1,0 +1,88 @@
+version: '3'
+
+services:
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - ./server/app/uploads:/uploads/
+      - ./server/app/static:/static/
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - backend
+    networks:
+      - nginx_network
+
+  cache:
+    image: redis:alpine
+    expose:
+      - 6379
+    networks:
+      - nginx_network
+
+  db:
+    image: postgres:10.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db
+    expose:
+      - 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - nginx_network
+
+  backend:
+    build: ./server
+    command: bash -c "python manage.py migrate &&
+      python manage.py makemessages --all -e py,html,jinja &&
+      python manage.py collectstatic <<<yes &&
+      gunicorn app.wsgi -b 0.0.0.0:8535 -c app/gunicorn.py --reload --pid=gunicorn.pid"
+    ports:
+      - 8535:8535
+    environment:
+      - DJANGO_SECRET_KEY=CHANGEME!!!
+      - DJANGO_DB_URL=psql://postgres:postgres@db:5432/db
+      - DJANGO_CACHE_URL=redis://cache:6379
+      - CELERY_BROKER_URL=redis://cache:6379
+    volumes:
+      - .:/code
+      - ./server:/code/server
+    depends_on:
+      - db
+      - cache
+    links:
+      - db:db
+      - cache:redis
+    networks:
+      - nginx_network
+
+  {% if cookiecutter.celery == "Enable" %}
+  celery:
+    build: ./server
+    command: bash -c "celery -A app worker -l INFO -B"
+    environment:
+      - CELERY_BROKER_URL=redis://cache:6379
+      - DJANGO_DB_URL=psql://postgres:postgres@db:5432/db
+      - DJANGO_CACHE_URL=redis://cache:6379
+      - DJANGO_SETTINGS_MODULE=app.settings
+    volumes:
+      - .:/code
+      - ./server:/code/server
+    links:
+      - db
+      - cache
+      - backend
+    networks:
+      - nginx_network
+  {% endif %}
+
+volumes:
+  postgres_data:
+
+networks:
+  nginx_network:
+    driver: bridge
