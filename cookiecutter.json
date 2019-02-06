@@ -3,7 +3,7 @@
     "project": "{{ cookiecutter.name.lower()|replace(' ', '_')|replace('-', '_') }}",
     "description": "A short description of the project.",
     "version": "0.1.0",
-    "timezone": ["UTC", "Europe/Moscow"],
+    "timezone": ["Europe/Kiev", "UTC"],
     "language": [
         {
             "lang_code": "ru",
@@ -18,6 +18,7 @@
     "author_email": "info@webcase.com.ua",
     "author_url": "webcase.com.ua",
     "celery": ["Disable", "Enable"],
+    "user_model": ["Disable", "Enable"],
     "testing": ["Disable", "Enable"],
     "docs": ["Disable", "Enable"],
     "_copy_without_render": [

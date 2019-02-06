@@ -14,6 +14,7 @@ ALLOWED_HOSTS = list()
 
 PROJECT_APPS = [
     'markup',
+    {% if cookiecutter.user_model == 'Enable' %}'apps.account',{% endif %}
 ]
 
 INSTALLED_APPS = PROJECT_APPS + [
@@ -97,6 +98,10 @@ DATABASES = {
     'default': env.db('DJANGO_DB_URL')
 }
 DATABASES['default']['CONN_MAX_AGE'] = env.int('CONN_MAX_AGE', default=0)
+
+{% if cookiecutter.user_model == 'Enable' %}
+AUTH_USER_MODEL = 'account.User'
+{% endif %}
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
