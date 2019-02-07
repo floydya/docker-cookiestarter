@@ -1,5 +1,3 @@
-FROM wernight/alpine-nginx-pagespeed
+FROM floydya/nginx-brotli:stable
 
-RUN rm /etc/nginx/nginx.conf
-COPY nginx.conf /etc/nginx/
 COPY local.conf /etc/nginx/conf.d/
