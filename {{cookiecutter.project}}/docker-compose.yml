@@ -3,6 +3,7 @@ version: '3'
 services:
 
   frontend:
+    container_name: {{cookiecutter.project}}_frontend
     build: ./client
     command: bash -c "npm run dev"
     volumes:
@@ -11,11 +12,13 @@ services:
       - node_modules:/code/client/node_modules
 
   cache:
+    container_name: {{cookiecutter.project}}_redis
     image: redis:alpine
     expose:
       - 6379
 
   db:
+    container_name: {{cookiecutter.project}}_postgres
     image: postgres:10.1-alpine
     environment:
       - POSTGRES_USER=postgres
@@ -27,6 +30,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
 
   backend:
+    container_name: {{cookiecutter.project}}_backend
     build: ./server
     command: bash -c "python manage.py migrate &&
       python manage.py makemessages --all -e py,html,jinja &&
@@ -49,6 +53,7 @@ services:
       - cache:redis
   {% if cookiecutter.celery == "Enable" %}
   celery:
+    container_name: {{cookiecutter.project}}_celery
     build: ./server
     command: bash -c "celery -A app worker -l INFO -B"
     environment:

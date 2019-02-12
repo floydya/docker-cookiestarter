@@ -4,6 +4,7 @@ services:
 
   nginx:
     build: ./nginx
+    container_name: {{cookiecutter.project}}_nginx
     volumes:
       - ./server/app/uploads:/uploads/
       - ./server/app/static:/static/
@@ -16,6 +17,7 @@ services:
       - nginx_network
 
   cache:
+    container_name: {{cookiecutter.project}}_redis
     image: redis:alpine
     expose:
       - 6379
@@ -23,6 +25,7 @@ services:
       - nginx_network
 
   db:
+    container_name: {{cookiecutter.project}}_postgres
     image: postgres:10.1-alpine
     environment:
       - POSTGRES_USER=postgres
@@ -36,6 +39,7 @@ services:
       - nginx_network
 
   backend:
+    container_name: {{cookiecutter.project}}_backend
     build: ./server
     command: bash -c "python manage.py migrate &&
       python manage.py makemessages --all -e py,html,jinja &&
@@ -51,6 +55,7 @@ services:
     volumes:
       - .:/code
       - ./server:/code/server
+      - ./logs/django:/var/log/django
     depends_on:
       - db
       - cache
@@ -62,6 +67,7 @@ services:
 
   {% if cookiecutter.celery == "Enable" %}
   celery:
+    container_name: {{cookiecutter.project}}_celery
     build: ./server
     command: bash -c "celery -A app worker -l INFO -B"
     environment:
@@ -72,6 +78,7 @@ services:
     volumes:
       - .:/code
       - ./server:/code/server
+      - ./logs/celery:/var/log/celery
     links:
       - db
       - cache

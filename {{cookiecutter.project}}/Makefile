@@ -2,6 +2,9 @@ start:
 	docker system prune
 	docker-compose up --build
 
+sh:
+	docker-compose run --rm backend python manage.py shell
+
 mm:
 	docker-compose run --rm backend python manage.py makemigrations
 
