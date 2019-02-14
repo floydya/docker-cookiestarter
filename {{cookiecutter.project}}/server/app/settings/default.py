@@ -137,10 +137,6 @@ EMAIL_CONFIG = env.email_url('DJANGO_EMAIL_URL', 'consolemail://127.0.0.1')
 vars().update(EMAIL_CONFIG)
 
 CELERY_BROKER_URL = env.str('CELERY_BROKER_URL')
-# CELERY_RESULT_BACKEND = env.str('CELERY_BROKER_URL') + "/0"
-# CELERY_ACCEPT_CONTENT = ['json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
 
 if not DEBUG:
     LOGGING = {
