@@ -69,7 +69,7 @@ services:
   celery:
     container_name: {{cookiecutter.project}}_celery
     build: ./server
-    command: bash -c "celery -A app worker -l INFO -B"
+    command: bash -c "celery -A app worker -l INFO"
     environment:
       - CELERY_BROKER_URL=redis://cache:6379
       - DJANGO_DB_URL=psql://postgres:postgres@db:5432/db
@@ -85,6 +85,23 @@ services:
       - backend
     networks:
       - nginx_network
+
+  celery_beat:
+    container_name: {{cookiecutter.project}}_celery_beat
+    build: ./server
+    command: bash -c "celery -A app beat -l INFO"
+    environment:
+      - CELERY_BROKER_URL=redis://cache:6379
+      - DJANGO_DB_URL=psql://postgres:postgres@db:5432/db
+      - DJANGO_CACHE_URL=redis://cache:6379
+      - DJANGO_SETTINGS_MODULE=app.settings
+    volumes:
+      - .:/code
+      - ./server:/code/server
+    links:
+      - db
+      - cache
+      - backend
   {% endif %}
 
 volumes:
