@@ -8,6 +8,7 @@ services:
     volumes:
       - ./server/app/uploads:/uploads/
       - ./server/app/static:/static/
+      - gunicorn_socket:/gunicorn_socket
     ports:
       - 80:80
       - 443:443
@@ -37,6 +38,27 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     networks:
       - nginx_network
+      
+  pgbouncer:
+    hostname: pgbouncer
+    image: raphaelpr/pgbouncer:latest
+    ports:
+      - "6432:6432"
+    environment:
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - POOL_MODE=transaction
+      - MAX_CLIENT_CONN=1000
+      - DEFAULT_POOL_SIZE=20
+      - RESERVE_POOL_SIZE=5
+      - LISTEN_ADDR=*
+      - AUTH_TYPE=plain
+      - AUTH_FILE=/etc/pgbouncer/userlist.txt
+    links:
+      - db:db
+    networks:
+      - nginx_network
 
   backend:
     container_name: {{cookiecutter.project}}_backend
@@ -44,18 +66,17 @@ services:
     command: bash -c "python manage.py migrate &&
       python manage.py makemessages --all -e py,html,jinja &&
       python manage.py collectstatic <<<yes &&
-      gunicorn app.wsgi -b 0.0.0.0:8535 -c app/gunicorn.py --reload --pid=gunicorn.pid"
-    ports:
-      - 8535:8535
+      gunicorn app.wsgi -b unix:/gunicorn_socket/socket -c app/gunicorn.py --pid=gunicorn.pid"
     environment:
       - DJANGO_SECRET_KEY=CHANGEME!!!
-      - DJANGO_DB_URL=psql://postgres:postgres@db:5432/db
+      - DJANGO_DB_URL=psql://postgres:postgres@db:6432/db
       - DJANGO_CACHE_URL=redis://cache:6379
       - CELERY_BROKER_URL=redis://cache:6379
     volumes:
       - .:/code
       - ./server:/code/server
       - ./logs/django:/var/log/django
+      - gunicorn_socket:/gunicorn_socket
     depends_on:
       - db
       - cache
@@ -72,7 +93,7 @@ services:
     command: bash -c "celery -A app worker -l INFO"
     environment:
       - CELERY_BROKER_URL=redis://cache:6379
-      - DJANGO_DB_URL=psql://postgres:postgres@db:5432/db
+      - DJANGO_DB_URL=psql://postgres:postgres@db:6432/db
       - DJANGO_CACHE_URL=redis://cache:6379
       - DJANGO_SETTINGS_MODULE=app.settings
     volumes:
@@ -92,7 +113,7 @@ services:
     command: bash -c "celery -A app beat -l INFO"
     environment:
       - CELERY_BROKER_URL=redis://cache:6379
-      - DJANGO_DB_URL=psql://postgres:postgres@db:5432/db
+      - DJANGO_DB_URL=psql://postgres:postgres@db:6432/db
       - DJANGO_CACHE_URL=redis://cache:6379
       - DJANGO_SETTINGS_MODULE=app.settings
     volumes:
@@ -106,6 +127,7 @@ services:
 
 volumes:
   postgres_data:
+  gunicorn_socket:
 
 networks:
   nginx_network:
